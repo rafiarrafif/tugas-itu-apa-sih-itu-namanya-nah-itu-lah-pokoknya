@@ -224,6 +224,126 @@
           }
         }
       }
+    },
+    "/api/v1/menu-items/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "stallId",
+            "in": "query",
+            "type": "integer"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar menu items dengan JOIN stall"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MenuItemInput"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Menu item dibuat"
+          },
+          "404": {
+            "description": "Warung tidak ditemukan"
+          }
+        }
+      }
+    },
+    "/api/v1/menu-items/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail menu item dengan JOIN stall"
+          },
+          "404": {
+            "description": "Menu item tidak ditemukan"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/MenuItemUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Menu item ter-update"
+          },
+          "404": {
+            "description": "Menu item tidak ditemukan"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Menu item terhapus"
+          },
+          "404": {
+            "description": "Menu item tidak ditemukan"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -394,6 +514,137 @@
                 "example": {
                   "type": "string",
                   "example": "customer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "MenuItemInput": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "object"
+        },
+        "required": {
+          "type": "array",
+          "example": [
+            "stallId",
+            "name",
+            "price",
+            "isAvailable"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "stallId": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "example": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            },
+            "name": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "example": {
+                  "type": "string",
+                  "example": "Nasi Goreng"
+                }
+              }
+            },
+            "price": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "example": {
+                  "type": "number",
+                  "example": 25000
+                }
+              }
+            },
+            "isAvailable": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "boolean"
+                },
+                "example": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "MenuItemUpdate": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "object"
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "example": {
+                  "type": "string",
+                  "example": "Nasi Goreng Update"
+                }
+              }
+            },
+            "price": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "example": {
+                  "type": "number",
+                  "example": 27000
+                }
+              }
+            },
+            "isAvailable": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "boolean"
+                },
+                "example": {
+                  "type": "boolean",
+                  "example": false
                 }
               }
             }

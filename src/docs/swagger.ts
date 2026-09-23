@@ -25,6 +25,24 @@ const doc = {
         role: { type: 'string', enum: ['admin', 'owner', 'customer'], example: 'customer' },
       },
     },
+    MenuItemInput: {
+      type: 'object',
+      required: ['stallId', 'name', 'price', 'isAvailable'],
+      properties: {
+        stallId: { type: 'integer', example: 1 },
+        name: { type: 'string', example: 'Nasi Goreng' },
+        price: { type: 'integer', example: 25000 },
+        isAvailable: { type: 'boolean', example: true },
+      },
+    },
+    MenuItemUpdate: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', example: 'Nasi Goreng Update' },
+        price: { type: 'integer', example: 27000 },
+        isAvailable: { type: 'boolean', example: false },
+      },
+    },
   },
 };
 
