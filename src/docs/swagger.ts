@@ -43,6 +43,16 @@ const doc = {
         isAvailable: { type: 'boolean', example: false },
       },
     },
+    ReviewInput: {
+      type: 'object',
+      required: ['stallId', 'userId', 'rating'],
+      properties: {
+        stallId: { type: 'integer', example: 1 },
+        userId: { type: 'integer', example: 3 },
+        rating: { type: 'integer', example: 5, description: 'Rating harus antara 1-5' },
+        comment: { type: 'string', example: 'Makanan lezat dan pelayanannya ramah!' },
+      },
+    },
   },
 };
 
