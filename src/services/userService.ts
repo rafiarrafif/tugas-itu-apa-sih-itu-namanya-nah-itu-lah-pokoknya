@@ -2,10 +2,12 @@ import {
   UserRepository,
   type CreateUserInput,
   type FindAllParams,
-} from '../repositories/userRepository.ts';
-import type { UserResponseDto, UserCreateRequestDto } from '../dtos/userDto.ts';
+} from "../repositories/userRepository.ts";
+import type { UserResponseDto, UserCreateRequestDto } from "../dtos/userDto.ts";
 
-type UserRow = NonNullable<Awaited<ReturnType<UserRepository['findAll']>>['rows'][number]>;
+type UserRow = NonNullable<
+  Awaited<ReturnType<UserRepository["findAll"]>>["rows"][number]
+>;
 
 export class UserService {
   private userRepository: UserRepository;
@@ -19,7 +21,7 @@ export class UserService {
       id: row.id,
       name: row.name,
       email: row.email,
-      role: row.role as 'admin' | 'owner' | 'customer',
+      role: row.role as "admin" | "owner" | "customer",
       createdAt: row.createdAt,
     };
   }
@@ -30,9 +32,8 @@ export class UserService {
   }
 
   async createUser(input: UserCreateRequestDto): Promise<UserResponseDto> {
-    // Validasi email belum terdaftar
     const existingUser = await this.userRepository.findByEmail(input.email);
-    if (existingUser) throw new Error('EMAIL_ALREADY_EXISTS');
+    if (existingUser) throw new Error("EMAIL_ALREADY_EXISTS");
 
     const createInput: CreateUserInput = {
       name: input.name,
@@ -42,7 +43,7 @@ export class UserService {
     };
 
     const row = await this.userRepository.create(createInput);
-    if (!row) throw new Error('USER_CREATE_FAILED');
+    if (!row) throw new Error("USER_CREATE_FAILED");
     return this.toDto(row);
   }
 }

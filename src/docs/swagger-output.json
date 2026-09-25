@@ -426,6 +426,53 @@
           }
         }
       }
+    },
+    "/api/v1/likes/": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LikeInput"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Like dibuat"
+          },
+          "404": {
+            "description": "Review atau user tidak ditemukan"
+          },
+          "409": {
+            "description": "User sudah like review ini"
+          }
+        }
+      }
+    },
+    "/api/v1/likes/{id}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Like terhapus"
+          },
+          "404": {
+            "description": "Like tidak ditemukan"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -808,6 +855,56 @@
                 "example": {
                   "type": "string",
                   "example": "Makanan lezat dan pelayanannya ramah!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "LikeInput": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "object"
+        },
+        "required": {
+          "type": "array",
+          "example": [
+            "reviewId",
+            "userId"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "reviewId": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "example": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            },
+            "userId": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "example": {
+                  "type": "number",
+                  "example": 3
                 }
               }
             }

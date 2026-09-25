@@ -7,6 +7,7 @@ import { stallRouter } from './routes/stallRouter.ts';
 import { userRouter } from './routes/userRouter.ts';
 import { menuItemRouter } from './routes/menuItemRouter.ts';
 import { reviewRouter } from './routes/reviewRouter.ts';
+import { likeRouter } from './routes/likeRouter.ts';
 
 const app: Application = express();
 const PORT: number = 3000;
@@ -34,6 +35,7 @@ app.use('/api/v1/stalls', stallRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/menu-items', menuItemRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/likes', likeRouter);
 
 app.listen(PORT, () => {
   console.log(`Server berjalan di http://localhost:${PORT}`);

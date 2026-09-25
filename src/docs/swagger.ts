@@ -53,6 +53,14 @@ const doc = {
         comment: { type: 'string', example: 'Makanan lezat dan pelayanannya ramah!' },
       },
     },
+    LikeInput: {
+      type: 'object',
+      required: ['reviewId', 'userId'],
+      properties: {
+        reviewId: { type: 'integer', example: 1 },
+        userId: { type: 'integer', example: 3 },
+      },
+    },
   },
 };
 
