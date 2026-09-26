@@ -52,8 +52,8 @@ export class ReviewRepository {
         },
       })
       .from(reviews)
-      .innerJoin(stalls, eq(reviews.stallId, stalls.id))
-      .innerJoin(users, eq(reviews.userId, users.id))
+      .leftJoin(stalls, eq(reviews.stallId, stalls.id))
+      .leftJoin(users, eq(reviews.userId, users.id))
       .where(where)
       .orderBy(reviews.id)
       .offset(offset)
@@ -91,8 +91,8 @@ export class ReviewRepository {
         },
       })
       .from(reviews)
-      .innerJoin(stalls, eq(reviews.stallId, stalls.id))
-      .innerJoin(users, eq(reviews.userId, users.id))
+      .leftJoin(stalls, eq(reviews.stallId, stalls.id))
+      .leftJoin(users, eq(reviews.userId, users.id))
       .where(eq(reviews.id, id));
 
     return rows[0];

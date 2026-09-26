@@ -66,7 +66,6 @@ export class MenuItemService {
   }
 
   async createMenuItem(input: MenuItemCreateRequestDto): Promise<MenuItemResponseDto> {
-    // Validasi stall_id harus ada
     const stall = await this.stallRepository.findById(input.stallId);
     if (!stall) throw new Error('STALL_NOT_FOUND');
 
@@ -80,7 +79,6 @@ export class MenuItemService {
     const row = await this.menuItemRepository.create(createInput);
     if (!row) throw new Error('MENU_ITEM_CREATE_FAILED');
 
-    // Setelah create, fetch dengan JOIN untuk return complete DTO
     const createdItem = await this.menuItemRepository.findById(row.id);
     if (!createdItem) throw new Error('MENU_ITEM_NOT_FOUND');
     return this.toDto(createdItem);
@@ -99,7 +97,6 @@ export class MenuItemService {
     const row = await this.menuItemRepository.update(id, updateInput);
     if (!row) throw new Error('MENU_ITEM_NOT_FOUND');
 
-    // Setelah update, fetch dengan JOIN untuk return complete DTO
     const updatedItem = await this.menuItemRepository.findById(id);
     if (!updatedItem) throw new Error('MENU_ITEM_NOT_FOUND');
     return this.toDto(updatedItem);

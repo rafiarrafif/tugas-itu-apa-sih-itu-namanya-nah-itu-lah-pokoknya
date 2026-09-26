@@ -60,11 +60,16 @@ export class LikeService {
     if (!row) throw new Error('LIKE_CREATE_FAILED');
 
     // Auto-increment like_count di review
-    const db = await getDb();
-    await db
-      .update(reviews)
-      .set({ likeCount: review.likeCount + 1 })
-      .where(eq(reviews.id, input.reviewId));
+    try {
+      const db = await getDb();
+      await db
+        .update(reviews)
+        .set({ likeCount: review.likeCount + 1 })
+        .where(eq(reviews.id, input.reviewId));
+    } catch (error) {
+      // Log error tapi jangan throw - like sudah created, counter bisa update nanti
+      console.error('Failed to increment like_count:', error);
+    }
 
     return this.toDto(row);
   }

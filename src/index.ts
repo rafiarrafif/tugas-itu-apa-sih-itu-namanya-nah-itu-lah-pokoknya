@@ -8,11 +8,17 @@ import { userRouter } from './routes/userRouter.ts';
 import { menuItemRouter } from './routes/menuItemRouter.ts';
 import { reviewRouter } from './routes/reviewRouter.ts';
 import { likeRouter } from './routes/likeRouter.ts';
+import { flagRouter } from './routes/flagRouter.ts';
+import { auditRouter } from './routes/auditRouter.ts';
+import { auditMiddleware } from './middleware/auditMiddleware.ts';
 
 const app: Application = express();
 const PORT: number = 3000;
 
 app.use(express.json());
+
+// Audit middleware untuk auto-logging POST, PUT, DELETE actions
+app.use(auditMiddleware);
 
 // Dokumentasi API (Swagger UI) dari spec hasil generate swagger-autogen.
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -36,6 +42,8 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/menu-items', menuItemRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/likes', likeRouter);
+app.use('/api/v1/flags', flagRouter);
+app.use('/api/v1/audit', auditRouter);
 
 app.listen(PORT, () => {
   console.log(`Server berjalan di http://localhost:${PORT}`);

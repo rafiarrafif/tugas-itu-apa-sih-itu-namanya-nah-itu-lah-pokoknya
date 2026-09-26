@@ -61,6 +61,24 @@ const doc = {
         userId: { type: 'integer', example: 3 },
       },
     },
+    FlagInput: {
+      type: 'object',
+      required: ['status'],
+      properties: {
+        status: { type: 'string', enum: ['pending', 'reviewed', 'resolved', 'dismissed'], example: 'reviewed' },
+      },
+    },
+    AuditInput: {
+      type: 'object',
+      required: ['userId', 'action', 'targetTable', 'targetId'],
+      properties: {
+        userId: { type: 'integer', example: 1 },
+        action: { type: 'string', enum: ['CREATE', 'UPDATE', 'DELETE'], example: 'CREATE' },
+        targetTable: { type: 'string', example: 'USERS' },
+        targetId: { type: 'integer', example: 5 },
+        metadata: { type: 'string', example: '{"path":"/api/v1/users","method":"POST"}' },
+      },
+    },
   },
 };
 
