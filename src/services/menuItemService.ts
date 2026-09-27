@@ -66,8 +66,15 @@ export class MenuItemService {
   }
 
   async createMenuItem(input: MenuItemCreateRequestDto): Promise<MenuItemResponseDto> {
+    // Validasi stall exists
     const stall = await this.stallRepository.findById(input.stallId);
     if (!stall) throw new Error('STALL_NOT_FOUND');
+
+    // Validasi price > 0
+    if (!input.price || input.price <= 0) throw new Error('INVALID_PRICE');
+
+    // Validasi name tidak kosong
+    if (!input.name || input.name.trim().length === 0) throw new Error('INVALID_NAME');
 
     const createInput: CreateMenuItemInput = {
       stallId: input.stallId,

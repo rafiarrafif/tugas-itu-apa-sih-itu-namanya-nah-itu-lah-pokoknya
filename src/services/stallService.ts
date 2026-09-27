@@ -4,6 +4,7 @@ import {
   type FindAllParams,
 } from '../repositories/stallRepository.ts';
 import { MenuItemRepository } from '../repositories/menuItemRepository.ts';
+import { UserRepository } from '../repositories/userRepository.ts';
 import type { MenuItemDto, StallResponseDto } from '../dtos/stallDto.ts';
 
 type StallRow = NonNullable<Awaited<ReturnType<StallRepository['findById']>>>;
@@ -11,13 +12,16 @@ type StallRow = NonNullable<Awaited<ReturnType<StallRepository['findById']>>>;
 export class StallService {
   private stallRepository: StallRepository;
   private menuItemRepository: MenuItemRepository;
+  private userRepository: UserRepository;
 
   constructor(
     stallRepository: StallRepository = new StallRepository(),
     menuItemRepository: MenuItemRepository = new MenuItemRepository(),
+    userRepository: UserRepository = new UserRepository(),
   ) {
     this.stallRepository = stallRepository;
     this.menuItemRepository = menuItemRepository;
+    this.userRepository = userRepository;
   }
 
   // Mapping row DB -> DTO API (sekaligus logika bisnis isPopular).
@@ -54,8 +58,12 @@ export class StallService {
   }
 
   async createStall(input: CreateStallInput): Promise<StallResponseDto> {
+    // Validasi owner exists
+    const owner = await this.userRepository.findById(input.ownerId);
+    if (!owner) throw new Error('OWNER_NOT_FOUND');
+
     const row = await this.stallRepository.create(input);
-    if (!row) throw new Error('STALL_NOT_FOUND');
+    if (!row) throw new Error('STALL_CREATE_FAILED');
     return this.toDto(row);
   }
 

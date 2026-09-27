@@ -86,11 +86,16 @@ export class LikeService {
     if (!row) throw new Error('LIKE_NOT_FOUND');
 
     // Auto-decrement like_count di review
-    const db = await getDb();
-    await db
-      .update(reviews)
-      .set({ likeCount: Math.max(0, review.likeCount - 1) })
-      .where(eq(reviews.id, like.reviewId));
+    try {
+      const db = await getDb();
+      await db
+        .update(reviews)
+        .set({ likeCount: Math.max(0, review.likeCount - 1) })
+        .where(eq(reviews.id, like.reviewId));
+    } catch (error) {
+      // Log error tapi jangan throw - like sudah deleted, counter bisa update nanti
+      console.error('Failed to decrement like_count:', error);
+    }
 
     return this.toDto(like);
   }

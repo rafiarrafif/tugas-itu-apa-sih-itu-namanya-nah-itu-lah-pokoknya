@@ -42,6 +42,12 @@ export class UserRepository {
     return { rows, total: Number(totals[0]?.total ?? 0) };
   }
 
+  async findById(id: number) {
+    const db = await getDb();
+    const rows = await db.select().from(users).where(eq(users.id, id));
+    return rows[0];
+  }
+
   async findByEmail(email: string) {
     const db = await getDb();
     const rows = await db.select().from(users).where(eq(users.email, email));

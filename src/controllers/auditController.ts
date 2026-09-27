@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { AuditService } from '../services/auditService.ts';
+import { normalizePagination } from '../utils/paginationHelper.ts';
 
 export class AuditController {
   private auditService: AuditService;
@@ -24,8 +25,7 @@ export class AuditController {
 
   getAuditLogs = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const page = Number(req.query.page) || 1;
-      const limit = Number(req.query.limit) || 10;
+      const { page, limit } = normalizePagination(req.query.page, req.query.limit);
       const userId = req.query.userId ? Number(req.query.userId) : undefined;
       const action = typeof req.query.action === 'string' ? req.query.action : undefined;
       const targetTable = typeof req.query.targetTable === 'string' ? req.query.targetTable : undefined;
