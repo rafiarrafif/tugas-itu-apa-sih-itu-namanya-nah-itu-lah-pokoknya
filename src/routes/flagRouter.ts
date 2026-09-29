@@ -4,13 +4,11 @@ import { FlagController } from '../controllers/flagController.ts';
 const flagRouter = Router();
 const flagController = new FlagController();
 
-flagRouter.get('/', (req, res) => {
-  // #swagger.parameters['status'] = { in: 'query', type: 'string', description: 'Filter by status: pending, reviewed, resolved, dismissed' }
-  // #swagger.parameters['search'] = { in: 'query', type: 'string', description: 'Search by reason' }
-  // #swagger.parameters['page']   = { in: 'query', type: 'integer' }
-  // #swagger.parameters['limit']  = { in: 'query', type: 'integer' }
-  // #swagger.responses[200] = { description: 'Daftar bendera laporan' }
-  return flagController.getFlags(req, res);
+flagRouter.get('/:id', (req, res) => {
+  // #swagger.parameters['id'] = { in: 'path', required: true, type: 'integer' }
+  // #swagger.responses[200] = { description: 'Detail bendera laporan' }
+  // #swagger.responses[404] = { description: 'Tidak ditemukan' }
+  return flagController.getFlagById(req, res);
 });
 
 flagRouter.put('/:id', (req, res) => {

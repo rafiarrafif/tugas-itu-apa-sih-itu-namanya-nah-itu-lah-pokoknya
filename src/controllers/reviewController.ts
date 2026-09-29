@@ -50,6 +50,15 @@ export class ReviewController {
     }
   };
 
+  getReviewById = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const review = await this.reviewService.getReviewById(Number(req.params.id));
+      return res.status(200).json({ status: 'success', data: review });
+    } catch (error) {
+      return this.handleError(res, error);
+    }
+  };
+
   createReview = async (req: Request, res: Response): Promise<Response> => {
     try {
       const review = await this.reviewService.createReview(req.body);

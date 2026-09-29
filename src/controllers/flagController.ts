@@ -42,6 +42,15 @@ export class FlagController {
     }
   };
 
+  getFlagById = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const flag = await this.flagService.getFlagById(Number(req.params.id));
+      return res.status(200).json({ status: 'success', data: flag });
+    } catch (error) {
+      return this.handleError(res, error);
+    }
+  };
+
   updateFlag = async (req: Request, res: Response): Promise<Response> => {
     try {
       const flag = await this.flagService.updateFlagStatus(Number(req.params.id), req.body);
