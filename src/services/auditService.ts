@@ -42,6 +42,12 @@ export class AuditService {
     return { data: rows.map((row) => this.toDto(row)), total };
   }
 
+  async getAuditLogById(id: number): Promise<AuditResponseDto> {
+    const row = await this.auditRepository.findById(id);
+    if (!row) throw new Error("AUDIT_LOG_NOT_FOUND");
+    return this.toDto(row);
+  }
+
   async createAuditLog(
     input: AuditCreateRequestDto,
   ): Promise<AuditResponseDto> {

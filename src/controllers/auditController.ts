@@ -1,6 +1,5 @@
 import type { Request, Response } from 'express';
 import { AuditService } from '../services/auditService.ts';
-import { normalizePagination } from '../utils/paginationHelper.ts';
 
 export class AuditController {
   private auditService: AuditService;
@@ -16,6 +15,12 @@ export class AuditController {
         message: 'Action tidak valid. Gunakan: CREATE, UPDATE, DELETE',
       });
     }
+    if (error instanceof Error && error.message === 'AUDIT_LOG_NOT_FOUND') {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Audit log tidak ditemukan',
+      });
+    }
     return res.status(500).json({
       status: 'error',
       message: 'Terjadi kesalahan pada server',
@@ -23,33 +28,19 @@ export class AuditController {
     });
   }
 
-  getAuditLogs = async (req: Request, res: Response): Promise<Response> => {
+  createAuditLog = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { page, limit } = normalizePagination(req.query.page, req.query.limit);
-      const userId = req.query.userId ? Number(req.query.userId) : undefined;
-      const action = typeof req.query.action === 'string' ? req.query.action : undefined;
-      const targetTable = typeof req.query.targetTable === 'string' ? req.query.targetTable : undefined;
-      const search = typeof req.query.search === 'string' ? req.query.search : undefined;
-
-      const { data, total } = await this.auditService.getAllAuditLogs({
-        userId,
-        action,
-        targetTable,
-        search,
-        page,
-        limit,
-      });
-
-      return res.status(200).json({ status: 'success', meta: { page, limit, total }, data });
+      const auditLog = await this.auditService.createAuditLog(req.body);
+      return res.status(201).json({ status: 'success', data: auditLog });
     } catch (error) {
       return this.handleError(res, error);
     }
   };
 
-  createAuditLog = async (req: Request, res: Response): Promise<Response> => {
+  getAuditLogById = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const auditLog = await this.auditService.createAuditLog(req.body);
-      return res.status(201).json({ status: 'success', data: auditLog });
+      const auditLog = await this.auditService.getAuditLogById(Number(req.params.id));
+      return res.status(200).json({ status: 'success', data: auditLog });
     } catch (error) {
       return this.handleError(res, error);
     }

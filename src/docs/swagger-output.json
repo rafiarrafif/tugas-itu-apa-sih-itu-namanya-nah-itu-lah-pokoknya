@@ -510,50 +510,6 @@
       }
     },
     "/api/v1/audit/": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "query",
-            "type": "integer",
-            "description": "Filter by user ID"
-          },
-          {
-            "name": "action",
-            "in": "query",
-            "type": "string",
-            "description": "Filter by action: CREATE, UPDATE, DELETE"
-          },
-          {
-            "name": "targetTable",
-            "in": "query",
-            "type": "string",
-            "description": "Filter by target table name"
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "type": "string",
-            "description": "Search in action"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Daftar audit logs"
-          }
-        }
-      },
       "post": {
         "description": "",
         "parameters": [
@@ -572,6 +528,27 @@
           },
           "400": {
             "description": "Action tidak valid"
+          }
+        }
+      }
+    },
+    "/api/v1/audit/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail audit log"
+          },
+          "404": {
+            "description": "Audit log tidak ditemukan"
           }
         }
       }
