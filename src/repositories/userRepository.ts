@@ -28,7 +28,6 @@ export class UserRepository {
 
     const offset = (params.page - 1) * params.limit;
 
-    // MSSQL: pagination memakai ORDER BY + OFFSET ... FETCH NEXT.
     const rows = await db
       .select()
       .from(users)
@@ -42,6 +41,12 @@ export class UserRepository {
     return { rows, total: Number(totals[0]?.total ?? 0) };
   }
 
+  async findById(id: number) {
+    const db = await getDb();
+    const rows = await db.select().from(users).where(eq(users.id, id));
+    return rows[0];
+  }
+
   async findByEmail(email: string) {
     const db = await getDb();
     const rows = await db.select().from(users).where(eq(users.email, email));
@@ -51,7 +56,6 @@ export class UserRepository {
   async create(input: CreateUserInput) {
     const db = await getDb();
 
-    // Hash password sebelum disimpan
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(input.password, saltRounds);
 

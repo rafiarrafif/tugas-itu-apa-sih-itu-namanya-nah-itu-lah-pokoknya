@@ -2,26 +2,30 @@ import {
   StallRepository,
   type CreateStallInput,
   type FindAllParams,
-} from '../repositories/stallRepository.ts';
-import { MenuItemRepository } from '../repositories/menuItemRepository.ts';
-import type { MenuItemDto, StallResponseDto } from '../dtos/stallDto.ts';
+} from "../repositories/stallRepository.ts";
+import { MenuItemRepository } from "../repositories/menuItemRepository.ts";
+import { UserRepository } from "../repositories/userRepository.ts";
+import type { MenuItemDto, StallResponseDto } from "../dtos/stallDto.ts";
 
-type StallRow = NonNullable<Awaited<ReturnType<StallRepository['findById']>>>;
+type StallRowFromList = Awaited<ReturnType<StallRepository["findAll"]>>["rows"][number];
+type StallRowFromFind = Awaited<ReturnType<StallRepository["findById"]>>;
 
 export class StallService {
   private stallRepository: StallRepository;
   private menuItemRepository: MenuItemRepository;
+  private userRepository: UserRepository;
 
   constructor(
     stallRepository: StallRepository = new StallRepository(),
     menuItemRepository: MenuItemRepository = new MenuItemRepository(),
+    userRepository: UserRepository = new UserRepository(),
   ) {
     this.stallRepository = stallRepository;
     this.menuItemRepository = menuItemRepository;
+    this.userRepository = userRepository;
   }
 
-  // Mapping row DB -> DTO API (sekaligus logika bisnis isPopular).
-  private toDto(row: StallRow): StallResponseDto {
+  private toDto(row: StallRowFromList | NonNullable<StallRowFromFind>): StallResponseDto {
     const avgRating = Number(row.avgRating);
     return {
       id: row.id,
@@ -43,31 +47,37 @@ export class StallService {
 
   async getStallById(id: number): Promise<StallResponseDto> {
     const row = await this.stallRepository.findById(id);
-    if (!row) throw new Error('STALL_NOT_FOUND');
+    if (!row) throw new Error("STALL_NOT_FOUND");
     return this.toDto(row);
   }
 
   async getStallMenus(id: number): Promise<MenuItemDto[]> {
     const row = await this.stallRepository.findById(id);
-    if (!row) throw new Error('STALL_NOT_FOUND');
+    if (!row) throw new Error("STALL_NOT_FOUND");
     return this.menuItemRepository.findByStallId(id);
   }
 
   async createStall(input: CreateStallInput): Promise<StallResponseDto> {
+    const owner = await this.userRepository.findById(input.ownerId);
+    if (!owner) throw new Error("OWNER_NOT_FOUND");
+
     const row = await this.stallRepository.create(input);
-    if (!row) throw new Error('STALL_NOT_FOUND');
+    if (!row) throw new Error("STALL_CREATE_FAILED");
     return this.toDto(row);
   }
 
-  async updateStall(id: number, input: Partial<CreateStallInput>): Promise<StallResponseDto> {
+  async updateStall(
+    id: number,
+    input: Partial<CreateStallInput>,
+  ): Promise<StallResponseDto> {
     const row = await this.stallRepository.update(id, input);
-    if (!row) throw new Error('STALL_NOT_FOUND');
+    if (!row) throw new Error("STALL_NOT_FOUND");
     return this.toDto(row);
   }
 
   async deleteStall(id: number): Promise<StallResponseDto> {
     const row = await this.stallRepository.remove(id);
-    if (!row) throw new Error('STALL_NOT_FOUND');
+    if (!row) throw new Error("STALL_NOT_FOUND");
     return this.toDto(row);
   }
 }
