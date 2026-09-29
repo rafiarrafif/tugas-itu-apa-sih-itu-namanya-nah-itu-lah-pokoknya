@@ -346,41 +346,6 @@
       }
     },
     "/api/v1/reviews/": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "search",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "stallId",
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "userId",
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Daftar reviews dengan JOIN user & stall"
-          }
-        }
-      },
       "post": {
         "description": "",
         "parameters": [
@@ -407,6 +372,25 @@
       }
     },
     "/api/v1/reviews/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail review dengan JOIN user & stall"
+          },
+          "404": {
+            "description": "Review tidak ditemukan"
+          }
+        }
+      },
       "delete": {
         "description": "",
         "parameters": [
@@ -474,41 +458,26 @@
         }
       }
     },
-    "/api/v1/flags/": {
+    "/api/v1/flags/{id}": {
       "get": {
         "description": "",
         "parameters": [
           {
-            "name": "status",
-            "in": "query",
-            "type": "string",
-            "description": "Filter by status: pending, reviewed, resolved, dismissed"
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "type": "string",
-            "description": "Search by reason"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "limit",
-            "in": "query",
+            "name": "id",
+            "in": "path",
+            "required": true,
             "type": "integer"
           }
         ],
         "responses": {
           "200": {
-            "description": "Daftar bendera laporan"
+            "description": "Detail bendera laporan"
+          },
+          "404": {
+            "description": "Tidak ditemukan"
           }
         }
-      }
-    },
-    "/api/v1/flags/{id}": {
+      },
       "put": {
         "description": "",
         "parameters": [
@@ -541,50 +510,6 @@
       }
     },
     "/api/v1/audit/": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "query",
-            "type": "integer",
-            "description": "Filter by user ID"
-          },
-          {
-            "name": "action",
-            "in": "query",
-            "type": "string",
-            "description": "Filter by action: CREATE, UPDATE, DELETE"
-          },
-          {
-            "name": "targetTable",
-            "in": "query",
-            "type": "string",
-            "description": "Filter by target table name"
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "type": "string",
-            "description": "Search in action"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Daftar audit logs"
-          }
-        }
-      },
       "post": {
         "description": "",
         "parameters": [
@@ -603,6 +528,27 @@
           },
           "400": {
             "description": "Action tidak valid"
+          }
+        }
+      }
+    },
+    "/api/v1/audit/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail audit log"
+          },
+          "404": {
+            "description": "Audit log tidak ditemukan"
           }
         }
       }

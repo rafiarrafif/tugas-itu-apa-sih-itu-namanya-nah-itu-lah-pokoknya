@@ -61,4 +61,10 @@ export class AuditRepository {
 
     return rows[0];
   }
+
+  async findById(id: number) {
+    const db = await getDb();
+    const rows = await db.select().from(auditLogs).where(eq(auditLogs.id, id));
+    return rows[0];
+  }
 }

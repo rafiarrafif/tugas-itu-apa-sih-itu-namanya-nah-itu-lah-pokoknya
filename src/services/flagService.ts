@@ -38,6 +38,12 @@ export class FlagService {
     return { data: rows.map((row) => this.toDto(row)), total };
   }
 
+  async getFlagById(id: number): Promise<FlagResponseDto> {
+    const row = await this.flagRepository.findById(id);
+    if (!row) throw new Error("FLAG_NOT_FOUND");
+    return this.toDto(row);
+  }
+
   async updateFlagStatus(
     id: number,
     input: FlagUpdateRequestDto,
