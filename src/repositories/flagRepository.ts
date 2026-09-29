@@ -24,7 +24,6 @@ export class FlagRepository {
 
     const offset = (params.page - 1) * params.limit;
 
-    // MSSQL: pagination memakai ORDER BY + OFFSET ... FETCH NEXT.
     const rows = await db
       .select()
       .from(flags)

@@ -5,9 +5,7 @@ import {
 } from "../repositories/userRepository.ts";
 import type { UserResponseDto, UserCreateRequestDto } from "../dtos/userDto.ts";
 
-type UserRow = NonNullable<
-  Awaited<ReturnType<UserRepository["findAll"]>>["rows"][number]
->;
+type UserRow = Awaited<ReturnType<UserRepository["findAll"]>>["rows"][number];
 
 export class UserService {
   private userRepository: UserRepository;

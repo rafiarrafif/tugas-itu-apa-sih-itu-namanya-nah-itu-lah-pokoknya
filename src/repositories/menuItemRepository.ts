@@ -33,8 +33,6 @@ export class MenuItemRepository {
 
     const offset = (params.page - 1) * params.limit;
 
-    // MSSQL: pagination memakai ORDER BY + OFFSET ... FETCH NEXT.
-    // Use leftJoin instead of innerJoin to handle cases where stall might not exist
     const rows = await db
       .select({
         id: menuItems.id,
@@ -130,5 +128,28 @@ export class MenuItemRepository {
     const db = await getDb();
     const rows = await db.select().from(menuItems).where(eq(menuItems.id, id));
     return rows[0];
+  }
+
+  async findByStallId(stallId: number) {
+    const db = await getDb();
+    const rows = await db
+      .select({
+        id: menuItems.id,
+        stallId: menuItems.stallId,
+        name: menuItems.name,
+        price: menuItems.price,
+        isAvailable: menuItems.isAvailable,
+        stall: {
+          id: stalls.id,
+          name: stalls.name,
+          category: stalls.category,
+          location: stalls.location,
+        },
+      })
+      .from(menuItems)
+      .leftJoin(stalls, eq(menuItems.stallId, stalls.id))
+      .where(eq(menuItems.stallId, stallId));
+
+    return rows;
   }
 }

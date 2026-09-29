@@ -1,7 +1,15 @@
-import { AuditRepository, type CreateAuditInput, type FindAllParams } from '../repositories/auditRepository.ts';
-import type { AuditResponseDto, AuditCreateRequestDto } from '../dtos/auditDto.ts';
+import {
+  AuditRepository,
+  type CreateAuditInput,
+  type FindAllParams,
+} from "../repositories/auditRepository.ts";
+import type {
+  AuditResponseDto,
+  AuditCreateRequestDto,
+} from "../dtos/auditDto.ts";
 
-type AuditRow = NonNullable<Awaited<ReturnType<AuditRepository['create']>>>;
+type AuditRowFromList = Awaited<ReturnType<AuditRepository["findAll"]>>["rows"][number];
+type AuditRowFromCreate = Awaited<ReturnType<AuditRepository["create"]>>;
 
 export class AuditService {
   private auditRepository: AuditRepository;
@@ -10,7 +18,7 @@ export class AuditService {
     this.auditRepository = auditRepository;
   }
 
-  private toDto(row: AuditRow): AuditResponseDto {
+  private toDto(row: AuditRowFromList | NonNullable<AuditRowFromCreate>): AuditResponseDto {
     return {
       id: row.id,
       userId: row.userId,
@@ -22,20 +30,23 @@ export class AuditService {
     };
   }
 
-  private validateAction(action: string): action is 'CREATE' | 'UPDATE' | 'DELETE' {
-    const validActions = ['CREATE', 'UPDATE', 'DELETE'];
+  private validateAction(
+    action: string,
+  ): action is "CREATE" | "UPDATE" | "DELETE" {
+    const validActions = ["CREATE", "UPDATE", "DELETE"];
     return validActions.includes(action);
   }
 
   async getAllAuditLogs(params: FindAllParams) {
     const { rows, total } = await this.auditRepository.findAll(params);
-    return { data: rows.map((row) => this.toDto(row as AuditRow)), total };
+    return { data: rows.map((row) => this.toDto(row)), total };
   }
 
-  async createAuditLog(input: AuditCreateRequestDto): Promise<AuditResponseDto> {
-    // Validasi action
+  async createAuditLog(
+    input: AuditCreateRequestDto,
+  ): Promise<AuditResponseDto> {
     if (!this.validateAction(input.action)) {
-      throw new Error('INVALID_ACTION');
+      throw new Error("INVALID_ACTION");
     }
 
     const createInput: CreateAuditInput = {

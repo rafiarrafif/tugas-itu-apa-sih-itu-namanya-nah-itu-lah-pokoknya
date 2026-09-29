@@ -3,16 +3,16 @@ import {
   type CreateMenuItemInput,
   type FindAllParams,
   type UpdateMenuItemInput,
-} from '../repositories/menuItemRepository.ts';
+} from "../repositories/menuItemRepository.ts";
 import type {
   MenuItemResponseDto,
   MenuItemCreateRequestDto,
   MenuItemUpdateRequestDto,
-} from '../dtos/menuItemDto.ts';
-import { StallRepository } from '../repositories/stallRepository.ts';
+} from "../dtos/menuItemDto.ts";
+import { StallRepository } from "../repositories/stallRepository.ts";
 
-type MenuItemRow = NonNullable<Awaited<ReturnType<MenuItemRepository['findAll']>>['rows'][number]>;
-type MenuItemRowWithoutStall = NonNullable<Awaited<ReturnType<MenuItemRepository['findByIdSimple']>>>;
+type MenuItemRowFromList = Awaited<ReturnType<MenuItemRepository["findAll"]>>["rows"][number];
+type MenuItemRowSimple = Awaited<ReturnType<MenuItemRepository["findByIdSimple"]>>;
 
 export class MenuItemService {
   private menuItemRepository: MenuItemRepository;
@@ -20,13 +20,13 @@ export class MenuItemService {
 
   constructor(
     menuItemRepository: MenuItemRepository = new MenuItemRepository(),
-    stallRepository: StallRepository = new StallRepository()
+    stallRepository: StallRepository = new StallRepository(),
   ) {
     this.menuItemRepository = menuItemRepository;
     this.stallRepository = stallRepository;
   }
 
-  private toDto(row: MenuItemRow): MenuItemResponseDto {
+  private toDto(row: MenuItemRowFromList): MenuItemResponseDto {
     return {
       id: row.id,
       stallId: row.stallId,
@@ -44,7 +44,9 @@ export class MenuItemService {
     };
   }
 
-  private toDtoSimple(row: MenuItemRowWithoutStall): Omit<MenuItemResponseDto, 'stall'> {
+  private toDtoSimple(
+    row: NonNullable<MenuItemRowSimple>,
+  ): Omit<MenuItemResponseDto, "stall"> {
     return {
       id: row.id,
       stallId: row.stallId,
@@ -61,20 +63,21 @@ export class MenuItemService {
 
   async getMenuItemById(id: number): Promise<MenuItemResponseDto> {
     const row = await this.menuItemRepository.findById(id);
-    if (!row) throw new Error('MENU_ITEM_NOT_FOUND');
+    if (!row) throw new Error("MENU_ITEM_NOT_FOUND");
     return this.toDto(row);
   }
 
-  async createMenuItem(input: MenuItemCreateRequestDto): Promise<MenuItemResponseDto> {
-    // Validasi stall exists
+  async createMenuItem(
+    input: MenuItemCreateRequestDto,
+  ): Promise<MenuItemResponseDto> {
     const stall = await this.stallRepository.findById(input.stallId);
-    if (!stall) throw new Error('STALL_NOT_FOUND');
-
-    // Validasi price > 0
-    if (!input.price || input.price <= 0) throw new Error('INVALID_PRICE');
-
-    // Validasi name tidak kosong
-    if (!input.name || input.name.trim().length === 0) throw new Error('INVALID_NAME');
+    if (!stall) throw new Error("STALL_NOT_FOUND");
+    
+    if (typeof input.price !== 'number' || input.price <= 0) 
+      throw new Error("INVALID_PRICE");
+    
+    if (typeof input.name !== 'string' || input.name.trim().length === 0)
+      throw new Error("INVALID_NAME");
 
     const createInput: CreateMenuItemInput = {
       stallId: input.stallId,
@@ -84,16 +87,25 @@ export class MenuItemService {
     };
 
     const row = await this.menuItemRepository.create(createInput);
-    if (!row) throw new Error('MENU_ITEM_CREATE_FAILED');
+    if (!row) throw new Error("MENU_ITEM_CREATE_FAILED");
 
     const createdItem = await this.menuItemRepository.findById(row.id);
-    if (!createdItem) throw new Error('MENU_ITEM_NOT_FOUND');
+    if (!createdItem) throw new Error("MENU_ITEM_NOT_FOUND");
     return this.toDto(createdItem);
   }
 
-  async updateMenuItem(id: number, input: MenuItemUpdateRequestDto): Promise<MenuItemResponseDto> {
+  async updateMenuItem(
+    id: number,
+    input: MenuItemUpdateRequestDto,
+  ): Promise<MenuItemResponseDto> {
     const item = await this.menuItemRepository.findById(id);
-    if (!item) throw new Error('MENU_ITEM_NOT_FOUND');
+    if (!item) throw new Error("MENU_ITEM_NOT_FOUND");
+
+    if (input.price !== undefined && (typeof input.price !== 'number' || input.price <= 0))
+      throw new Error("INVALID_PRICE");
+    
+    if (input.name !== undefined && (typeof input.name !== 'string' || input.name.trim().length === 0))
+      throw new Error("INVALID_NAME");
 
     const updateInput: UpdateMenuItemInput = {
       name: input.name,
@@ -102,19 +114,19 @@ export class MenuItemService {
     };
 
     const row = await this.menuItemRepository.update(id, updateInput);
-    if (!row) throw new Error('MENU_ITEM_NOT_FOUND');
+    if (!row) throw new Error("MENU_ITEM_NOT_FOUND");
 
     const updatedItem = await this.menuItemRepository.findById(id);
-    if (!updatedItem) throw new Error('MENU_ITEM_NOT_FOUND');
+    if (!updatedItem) throw new Error("MENU_ITEM_NOT_FOUND");
     return this.toDto(updatedItem);
   }
 
   async deleteMenuItem(id: number): Promise<MenuItemResponseDto> {
     const item = await this.menuItemRepository.findById(id);
-    if (!item) throw new Error('MENU_ITEM_NOT_FOUND');
+    if (!item) throw new Error("MENU_ITEM_NOT_FOUND");
 
     const row = await this.menuItemRepository.remove(id);
-    if (!row) throw new Error('MENU_ITEM_NOT_FOUND');
+    if (!row) throw new Error("MENU_ITEM_NOT_FOUND");
     return this.toDto(item);
   }
 }

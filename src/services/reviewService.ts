@@ -10,9 +10,7 @@ import type {
 import { StallRepository } from "../repositories/stallRepository.ts";
 import { UserRepository } from "../repositories/userRepository.ts";
 
-type ReviewRow = NonNullable<
-  Awaited<ReturnType<ReviewRepository["findAll"]>>["rows"][number]
->;
+type ReviewRowFromList = Awaited<ReturnType<ReviewRepository["findAll"]>>["rows"][number];
 
 export class ReviewService {
   private reviewRepository: ReviewRepository;
@@ -29,7 +27,7 @@ export class ReviewService {
     this.userRepository = userRepository;
   }
 
-  private toDto(row: ReviewRow): ReviewResponseDto {
+  private toDto(row: ReviewRowFromList): ReviewResponseDto {
     return {
       id: row.id,
       stallId: row.stallId,
@@ -70,7 +68,7 @@ export class ReviewService {
   async createReview(
     input: ReviewCreateRequestDto,
   ): Promise<ReviewResponseDto> {
-    if (input.rating < 1 || input.rating > 5) {
+    if (!Number.isInteger(input.rating) || input.rating < 1 || input.rating > 5) {
       throw new Error("INVALID_RATING");
     }
 
