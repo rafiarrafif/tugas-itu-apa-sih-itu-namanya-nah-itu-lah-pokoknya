@@ -36,27 +36,35 @@
           {
             "name": "search",
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "description": "Search stall name (max 100 chars)",
+            "required": false
           },
           {
             "name": "category",
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "description": "Filter by category (max 50 chars)",
+            "required": false
           },
           {
             "name": "page",
             "in": "query",
-            "type": "integer"
+            "type": "integer",
+            "description": "Page number (default: 1, min: 1)",
+            "required": false
           },
           {
             "name": "limit",
             "in": "query",
-            "type": "integer"
+            "type": "integer",
+            "description": "Items per page (default: 10, min: 1, max: 100)",
+            "required": false
           }
         ],
         "responses": {
           "200": {
-            "description": "Daftar warung"
+            "description": "List of stalls"
           }
         }
       },
@@ -87,15 +95,19 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer"
+            "type": "integer",
+            "description": "Stall ID (must be > 0)"
           }
         ],
         "responses": {
           "200": {
-            "description": "Detail warung"
+            "description": "Stall details"
+          },
+          "400": {
+            "description": "Invalid ID (must be a positive integer)"
           },
           "404": {
-            "description": "Tidak ditemukan"
+            "description": "Stall not found"
           }
         }
       },
@@ -106,7 +118,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer"
+            "type": "integer",
+            "description": "Stall ID (must be > 0)"
           },
           {
             "name": "body",
@@ -119,10 +132,13 @@
         ],
         "responses": {
           "200": {
-            "description": "Warung ter-update"
+            "description": "Stall updated"
+          },
+          "400": {
+            "description": "Invalid ID or invalid input"
           },
           "404": {
-            "description": "Tidak ditemukan"
+            "description": "Stall not found"
           }
         }
       },
@@ -133,15 +149,19 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer"
+            "type": "integer",
+            "description": "Stall ID (must be > 0)"
           }
         ],
         "responses": {
           "200": {
-            "description": "Warung terhapus"
+            "description": "Stall deleted"
+          },
+          "400": {
+            "description": "Invalid ID (must be a positive integer)"
           },
           "404": {
-            "description": "Tidak ditemukan"
+            "description": "Stall not found"
           }
         }
       }
@@ -154,15 +174,19 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "integer"
+            "type": "integer",
+            "description": "Stall ID (must be > 0)"
           }
         ],
         "responses": {
           "200": {
-            "description": "Daftar menu"
+            "description": "Menu items for stall"
+          },
+          "400": {
+            "description": "Invalid ID (must be a positive integer)"
           },
           "404": {
-            "description": "Tidak ditemukan"
+            "description": "Stall not found"
           }
         }
       }
