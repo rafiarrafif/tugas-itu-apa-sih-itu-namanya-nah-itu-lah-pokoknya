@@ -70,19 +70,15 @@
       },
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/StallInput"
-            }
-          }
-        ],
         "responses": {
           "201": {
-            "description": "Warung dibuat"
+            "description": "Stall created successfully"
+          },
+          "400": {
+            "description": "Invalid input (name must be 3-100 chars, category max 50, location max 100, description max 1000)"
+          },
+          "404": {
+            "description": "Owner not found"
           }
         }
       }
@@ -181,6 +177,45 @@
         "responses": {
           "200": {
             "description": "Menu items for stall"
+          },
+          "400": {
+            "description": "Invalid ID (must be a positive integer)"
+          },
+          "404": {
+            "description": "Stall not found"
+          }
+        }
+      }
+    },
+    "/api/v1/stalls/{id}/reviews": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Stall ID (must be > 0)"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer",
+            "description": "Page number (default: 1, min: 1)",
+            "required": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Items per page (default: 10, min: 1, max: 100)",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of reviews for stall"
           },
           "400": {
             "description": "Invalid ID (must be a positive integer)"
