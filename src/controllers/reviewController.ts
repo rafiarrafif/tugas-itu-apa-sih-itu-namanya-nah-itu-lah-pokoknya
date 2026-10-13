@@ -10,6 +10,9 @@ export class ReviewController {
   }
 
   private handleError(res: Response, error: unknown): Response {
+    if (error instanceof Error && error.message === 'INVALID_ID') {
+      return res.status(400).json({ status: 'fail', message: 'ID harus berupa angka positif' });
+    }
     if (error instanceof Error && error.message === 'REVIEW_NOT_FOUND') {
       return res.status(404).json({ status: 'fail', message: 'Review tidak ditemukan' });
     }
@@ -59,9 +62,44 @@ export class ReviewController {
     }
   };
 
+  getReviewByIdForStall = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const stallId = this.validateId(req.params.stallId);
+      const reviewId = this.validateId(req.params.reviewId);
+      
+      const review = await this.reviewService.getReviewById(reviewId);
+      
+      // Verify review belongs to the specified stall
+      if (review.stallId !== stallId) {
+        throw new Error("REVIEW_NOT_FOUND");
+      }
+      
+      return res.status(200).json({ status: 'success', data: review });
+    } catch (error) {
+      return this.handleError(res, error);
+    }
+  };
+
   createReview = async (req: Request, res: Response): Promise<Response> => {
     try {
       const review = await this.reviewService.createReview(req.body);
+      return res.status(201).json({ status: 'success', data: review });
+    } catch (error) {
+      return this.handleError(res, error);
+    }
+  };
+
+  createReviewForStall = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const stallId = this.validateId(req.params.stallId);
+      const { userId, rating, comment } = req.body;
+      
+      const review = await this.reviewService.createReview({
+        stallId,
+        userId,
+        rating,
+        comment,
+      });
       return res.status(201).json({ status: 'success', data: review });
     } catch (error) {
       return this.handleError(res, error);
@@ -76,4 +114,31 @@ export class ReviewController {
       return this.handleError(res, error);
     }
   };
+
+  deleteReviewForStall = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const stallId = this.validateId(req.params.stallId);
+      const reviewId = this.validateId(req.params.reviewId);
+      
+      const review = await this.reviewService.getReviewById(reviewId);
+      
+      // Verify review belongs to the specified stall
+      if (review.stallId !== stallId) {
+        throw new Error("REVIEW_NOT_FOUND");
+      }
+      
+      const deletedReview = await this.reviewService.deleteReview(reviewId);
+      return res.status(200).json({ status: 'success', data: deletedReview });
+    } catch (error) {
+      return this.handleError(res, error);
+    }
+  };
+
+  private validateId(id: any): number {
+    const parsedId = Number(id);
+    if (!Number.isInteger(parsedId) || parsedId <= 0) {
+      throw new Error('INVALID_ID');
+    }
+    return parsedId;
+  }
 }

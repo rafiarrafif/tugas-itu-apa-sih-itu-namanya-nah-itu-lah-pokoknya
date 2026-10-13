@@ -70,6 +70,16 @@
       },
       "post": {
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StallInput"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Stall created successfully"
@@ -162,31 +172,6 @@
         }
       }
     },
-    "/api/v1/stalls/{id}/menus": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "description": "Stall ID (must be > 0)"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Menu items for stall"
-          },
-          "400": {
-            "description": "Invalid ID (must be a positive integer)"
-          },
-          "404": {
-            "description": "Stall not found"
-          }
-        }
-      }
-    },
     "/api/v1/stalls/{id}/reviews": {
       "get": {
         "description": "",
@@ -222,6 +207,99 @@
           },
           "404": {
             "description": "Stall not found"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Stall ID (must be > 0)"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReviewInputForStall"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Review created successfully"
+          },
+          "400": {
+            "description": "Invalid ID or invalid rating"
+          },
+          "404": {
+            "description": "Stall or user not found"
+          }
+        }
+      }
+    },
+    "/api/v1/stalls/{stallId}/reviews/{reviewId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "stallId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Stall ID (must be > 0)"
+          },
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Review ID (must be > 0)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review details"
+          },
+          "400": {
+            "description": "Invalid ID"
+          },
+          "404": {
+            "description": "Review not found or does not belong to stall"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "stallId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Stall ID (must be > 0)"
+          },
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Review ID (must be > 0)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review deleted"
+          },
+          "400": {
+            "description": "Invalid ID"
+          },
+          "404": {
+            "description": "Review not found or does not belong to stall"
           }
         }
       }
@@ -400,72 +478,6 @@
           },
           "404": {
             "description": "Menu item tidak ditemukan"
-          }
-        }
-      }
-    },
-    "/api/v1/reviews/": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ReviewInput"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Review dibuat"
-          },
-          "400": {
-            "description": "Rating harus antara 1-5"
-          },
-          "404": {
-            "description": "Warung atau user tidak ditemukan"
-          }
-        }
-      }
-    },
-    "/api/v1/reviews/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Detail review dengan JOIN user & stall"
-          },
-          "404": {
-            "description": "Review tidak ditemukan"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Review terhapus"
-          },
-          "404": {
-            "description": "Review tidak ditemukan"
           }
         }
       }
@@ -953,6 +965,73 @@
                 }
               }
             },
+            "userId": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "example": {
+                  "type": "number",
+                  "example": 3
+                }
+              }
+            },
+            "rating": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "integer"
+                },
+                "example": {
+                  "type": "number",
+                  "example": 5
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Rating harus antara 1-5"
+                }
+              }
+            },
+            "comment": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "example": {
+                  "type": "string",
+                  "example": "Makanan lezat dan pelayanannya ramah!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "ReviewInputForStall": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "object"
+        },
+        "required": {
+          "type": "array",
+          "example": [
+            "userId",
+            "rating"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
             "userId": {
               "type": "object",
               "properties": {

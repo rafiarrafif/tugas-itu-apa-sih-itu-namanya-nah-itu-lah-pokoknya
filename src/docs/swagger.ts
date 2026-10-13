@@ -53,6 +53,15 @@ const doc = {
         comment: { type: 'string', example: 'Makanan lezat dan pelayanannya ramah!' },
       },
     },
+    ReviewInputForStall: {
+      type: 'object',
+      required: ['userId', 'rating'],
+      properties: {
+        userId: { type: 'integer', example: 3 },
+        rating: { type: 'integer', example: 5, description: 'Rating harus antara 1-5' },
+        comment: { type: 'string', example: 'Makanan lezat dan pelayanannya ramah!' },
+      },
+    },
     LikeInput: {
       type: 'object',
       required: ['reviewId', 'userId'],
