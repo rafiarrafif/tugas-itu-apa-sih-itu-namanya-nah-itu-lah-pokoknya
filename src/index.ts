@@ -9,6 +9,7 @@ import { menuItemRouter } from './routes/menuItemRouter.ts';
 import { likeRouter } from './routes/likeRouter.ts';
 import { flagRouter } from './routes/flagRouter.ts';
 import { auditRouter } from './routes/auditRouter.ts';
+import { authRouter } from './routes/authRouter.ts';
 import { auditMiddleware } from './middleware/auditMiddleware.ts';
 
 const app: Application = express();
@@ -38,6 +39,7 @@ app.get('/health', async (req: Request, res: Response) => {
 
 app.use('/api/v1/stalls', stallRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/menu-items', menuItemRouter);
 app.use('/api/v1/likes', likeRouter);
 app.use('/api/v1/flags', flagRouter);
