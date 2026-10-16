@@ -71,10 +71,7 @@ export class UserService {
 
   verifyToken(token: string) {
     try {
-      return jwt.verify(
-        token,
-        process.env.JWT_SECRET ?? "development-secret",
-      );
+      return jwt.verify(token, process.env.JWT_SECRET ?? "development-secret");
     } catch {
       throw new Error("INVALID_TOKEN");
     }

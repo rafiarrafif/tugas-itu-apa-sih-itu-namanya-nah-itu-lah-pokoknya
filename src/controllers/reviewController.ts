@@ -122,7 +122,8 @@ export class ReviewController {
   ): Promise<Response> => {
     try {
       const stallId = this.validateId(req.params.id);
-      const { userId, rating, comment } = req.body;
+      const { rating, comment } = req.body;
+      const userId = req.userId as number;
 
       const review = await this.reviewService.createReview({
         stallId,
