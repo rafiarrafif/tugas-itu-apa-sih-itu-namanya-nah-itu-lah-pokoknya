@@ -136,7 +136,10 @@ export class StallController {
     try {
       // Validate request body
       const validatedBody = this.validateCreateStallBody(req.body);
-      const stall = await this.stallService.createStall(validatedBody);
+      const stall = await this.stallService.createStall({
+        ...validatedBody,
+        ownerId: req.userId as number,
+      });
       return res.status(201).json({ status: 'success', data: stall });
     } catch (error) {
       return this.handleError(res, error);

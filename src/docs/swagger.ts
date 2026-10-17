@@ -6,9 +6,8 @@ const doc = {
   definitions: {
     StallInput: {
       type: "object",
-      required: ["ownerId", "name"],
+      required: ["name"],
       properties: {
-        ownerId: { type: "integer", example: 2 },
         name: { type: "string", example: "Warung Baru" },
         category: { type: "string", example: "Nasi" },
         location: { type: "string", example: "Kantin FK" },

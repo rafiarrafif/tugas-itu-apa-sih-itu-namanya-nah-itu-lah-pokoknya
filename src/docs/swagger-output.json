@@ -72,6 +72,11 @@
         "description": "",
         "parameters": [
           {
+            "name": "auth_token",
+            "in": "header",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
@@ -86,6 +91,12 @@
           },
           "400": {
             "description": "Invalid input (name must be 3-100 chars, category max 50, location max 100, description max 1000)"
+          },
+          "401": {
+            "description": "Token tidak ditemukan atau tidak valid"
+          },
+          "403": {
+            "description": "User tidak memiliki izin"
           },
           "404": {
             "description": "Owner not found"
@@ -711,7 +722,6 @@
         "required": {
           "type": "array",
           "example": [
-            "ownerId",
             "name"
           ],
           "items": {
@@ -721,19 +731,6 @@
         "properties": {
           "type": "object",
           "properties": {
-            "ownerId": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "integer"
-                },
-                "example": {
-                  "type": "number",
-                  "example": 2
-                }
-              }
-            },
             "name": {
               "type": "object",
               "properties": {

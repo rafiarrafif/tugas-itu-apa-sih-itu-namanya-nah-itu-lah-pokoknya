@@ -5,6 +5,7 @@ declare global {
   namespace Express {
     interface Request {
       userId?: number;
+      userRole?: string;
     }
   }
 }
@@ -37,6 +38,7 @@ export const authMiddleware = (
     }
 
     req.userId = payload.userId;
+    req.userRole = typeof payload.role === 'string' ? payload.role : undefined;
     return next();
   } catch {
     return res

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { StallController } from "../controllers/stallController.ts";
 import { ReviewController } from "../controllers/reviewController.ts";
 import { authMiddleware } from "../middleware/authMiddleware.ts";
+import { requireRoles } from "../middleware/roleMiddleware.ts";
 
 const stallRouter = Router();
 const stallController = new StallController();
@@ -16,10 +17,12 @@ stallRouter.get("/", (req, res) => {
   return stallController.getStalls(req, res);
 });
 
-stallRouter.post("/", (req, res) => {
+stallRouter.post("/", authMiddleware, requireRoles("admin", "owner"), (req, res) => {
   // #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/StallInput' } }
   // #swagger.responses[201] = { description: 'Stall created successfully' }
   // #swagger.responses[400] = { description: 'Invalid input (name must be 3-100 chars, category max 50, location max 100, description max 1000)' }
+  // #swagger.responses[401] = { description: 'Token tidak ditemukan atau tidak valid' }
+  // #swagger.responses[403] = { description: 'User tidak memiliki izin' }
   // #swagger.responses[404] = { description: 'Owner not found' }
   return stallController.createStall(req, res);
 });
