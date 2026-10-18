@@ -17,15 +17,20 @@ stallRouter.get("/", (req, res) => {
   return stallController.getStalls(req, res);
 });
 
-stallRouter.post("/", authMiddleware, requireRoles("admin", "owner"), (req, res) => {
-  // #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/StallInput' } }
-  // #swagger.responses[201] = { description: 'Stall created successfully' }
-  // #swagger.responses[400] = { description: 'Invalid input (name must be 3-100 chars, category max 50, location max 100, description max 1000)' }
-  // #swagger.responses[401] = { description: 'Token tidak ditemukan atau tidak valid' }
-  // #swagger.responses[403] = { description: 'User tidak memiliki izin' }
-  // #swagger.responses[404] = { description: 'Owner not found' }
-  return stallController.createStall(req, res);
-});
+stallRouter.post(
+  "/",
+  authMiddleware,
+  requireRoles("admin", "owner"),
+  (req, res) => {
+    // #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/StallInput' } }
+    // #swagger.responses[201] = { description: 'Stall created successfully' }
+    // #swagger.responses[400] = { description: 'Invalid input (name must be 3-100 chars, category max 50, location max 100, description max 1000)' }
+    // #swagger.responses[401] = { description: 'Token tidak ditemukan atau tidak valid' }
+    // #swagger.responses[403] = { description: 'User tidak memiliki izin' }
+    // #swagger.responses[404] = { description: 'Owner not found' }
+    return stallController.createStall(req, res);
+  },
+);
 
 stallRouter.get("/:id", (req, res) => {
   // #swagger.parameters['id'] = { in: 'path', required: true, type: 'integer', description: 'Stall ID (must be > 0)' }

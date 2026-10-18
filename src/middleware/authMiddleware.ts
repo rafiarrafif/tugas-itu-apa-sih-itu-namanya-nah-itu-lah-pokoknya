@@ -38,7 +38,7 @@ export const authMiddleware = (
     }
 
     req.userId = payload.userId;
-    req.userRole = typeof payload.role === 'string' ? payload.role : undefined;
+    req.userRole = typeof payload.role === "string" ? payload.role : undefined;
     return next();
   } catch {
     return res
