@@ -3,6 +3,7 @@ import { StallController } from "../controllers/stallController.ts";
 import { ReviewController } from "../controllers/reviewController.ts";
 import { authMiddleware } from "../middleware/authMiddleware.ts";
 import { requireRoles } from "../middleware/roleMiddleware.ts";
+import { requireStallOwnerOrAdmin } from "../middleware/stallAuthorizationMiddleware.ts";
 
 const stallRouter = Router();
 const stallController = new StallController();
@@ -40,22 +41,37 @@ stallRouter.get("/:id", (req, res) => {
   return stallController.getStallById(req, res);
 });
 
-stallRouter.put("/:id", (req, res) => {
-  // #swagger.parameters['id'] = { in: 'path', required: true, type: 'integer', description: 'Stall ID (must be > 0)' }
-  // #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/StallInput' } }
-  // #swagger.responses[200] = { description: 'Stall updated' }
-  // #swagger.responses[400] = { description: 'Invalid ID or invalid input' }
-  // #swagger.responses[404] = { description: 'Stall not found' }
-  return stallController.updateStall(req, res);
-});
+stallRouter.put(
+  "/:id",
+  authMiddleware,
+  requireRoles("admin", "owner"),
+  requireStallOwnerOrAdmin,
+  (req, res) => {
+    // #swagger.parameters['id'] = { in: 'path', required: true, type: 'integer', description: 'Stall ID (must be > 0)' }
+    // #swagger.parameters['body'] = { in: 'body', required: true, schema: { $ref: '#/definitions/StallInput' } }
+    // #swagger.responses[200] = { description: 'Stall updated' }
+    // #swagger.responses[400] = { description: 'Invalid ID or invalid input' }
+    // #swagger.responses[401] = { description: 'Token tidak ditemukan atau tidak valid' }
+    // #swagger.responses[403] = { description: 'User tidak memiliki izin untuk mengubah warung ini' }
+    // #swagger.responses[404] = { description: 'Stall not found' }
+    return stallController.updateStall(req, res);
+  },
+);
 
-stallRouter.delete("/:id", (req, res) => {
-  // #swagger.parameters['id'] = { in: 'path', required: true, type: 'integer', description: 'Stall ID (must be > 0)' }
-  // #swagger.responses[200] = { description: 'Stall deleted' }
-  // #swagger.responses[400] = { description: 'Invalid ID (must be a positive integer)' }
-  // #swagger.responses[404] = { description: 'Stall not found' }
-  return stallController.deleteStall(req, res);
-});
+stallRouter.delete(
+  "/:id",
+  authMiddleware,
+  requireRoles("admin"),
+  (req, res) => {
+    // #swagger.parameters['id'] = { in: 'path', required: true, type: 'integer', description: 'Stall ID (must be > 0)' }
+    // #swagger.responses[200] = { description: 'Stall deleted' }
+    // #swagger.responses[400] = { description: 'Invalid ID (must be a positive integer)' }
+    // #swagger.responses[401] = { description: 'Token tidak ditemukan atau tidak valid' }
+    // #swagger.responses[403] = { description: 'User tidak memiliki izin untuk melakukan aksi ini' }
+    // #swagger.responses[404] = { description: 'Stall not found' }
+    return stallController.deleteStall(req, res);
+  },
+);
 
 stallRouter.get("/:id/reviews", (req, res) => {
   // #swagger.parameters['id'] = { in: 'path', required: true, type: 'integer', description: 'Stall ID (must be > 0)' }

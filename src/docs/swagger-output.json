@@ -139,6 +139,11 @@
             "description": "Stall ID (must be > 0)"
           },
           {
+            "name": "auth_token",
+            "in": "header",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
@@ -154,6 +159,12 @@
           "400": {
             "description": "Invalid ID or invalid input"
           },
+          "401": {
+            "description": "Token tidak ditemukan atau tidak valid"
+          },
+          "403": {
+            "description": "User tidak memiliki izin untuk mengubah warung ini"
+          },
           "404": {
             "description": "Stall not found"
           }
@@ -168,6 +179,11 @@
             "required": true,
             "type": "integer",
             "description": "Stall ID (must be > 0)"
+          },
+          {
+            "name": "auth_token",
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
@@ -176,6 +192,12 @@
           },
           "400": {
             "description": "Invalid ID (must be a positive integer)"
+          },
+          "401": {
+            "description": "Token tidak ditemukan atau tidak valid"
+          },
+          "403": {
+            "description": "User tidak memiliki izin untuk melakukan aksi ini"
           },
           "404": {
             "description": "Stall not found"
