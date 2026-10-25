@@ -4,6 +4,8 @@ import {
   type FindAllParams,
 } from "../repositories/userRepository.ts";
 import type { UserResponseDto, UserCreateRequestDto } from "../dtos/userDto.ts";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 type UserRow = Awaited<ReturnType<UserRepository["findAll"]>>["rows"][number];
 
@@ -43,5 +45,35 @@ export class UserService {
     const row = await this.userRepository.create(createInput);
     if (!row) throw new Error("USER_CREATE_FAILED");
     return this.toDto(row);
+  }
+
+  async login(email: string, password: string) {
+    if (typeof email !== "string" || typeof password !== "string") {
+      throw new Error("INVALID_CREDENTIALS");
+    }
+
+    const user = await this.userRepository.findByEmail(email);
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+      throw new Error("INVALID_CREDENTIALS");
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET ?? "development-secret",
+      { expiresIn: "1d" },
+    );
+
+    return {
+      token,
+      user: this.toDto(user),
+    };
+  }
+
+  verifyToken(token: string) {
+    try {
+      return jwt.verify(token, process.env.JWT_SECRET ?? "development-secret");
+    } catch {
+      throw new Error("INVALID_TOKEN");
+    }
   }
 }

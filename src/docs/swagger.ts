@@ -1,88 +1,124 @@
-import swaggerAutogen from 'swagger-autogen';
+import swaggerAutogen from "swagger-autogen";
 
 const doc = {
-  info: { title: 'Review Kantin API', version: '1.0.0' },
-  servers: [{ url: 'http://localhost:3000' }],
+  info: { title: "Review Kantin API", version: "1.0.0" },
+  servers: [{ url: "http://localhost:3000" }],
   definitions: {
     StallInput: {
-      type: 'object',
-      required: ['ownerId', 'name'],
+      type: "object",
+      required: ["name"],
       properties: {
-        ownerId: { type: 'integer', example: 2 },
-        name: { type: 'string', example: 'Warung Baru' },
-        category: { type: 'string', example: 'Nasi' },
-        location: { type: 'string', example: 'Kantin FK' },
-        description: { type: 'string' },
+        name: { type: "string", example: "Warung Baru" },
+        category: { type: "string", example: "Nasi" },
+        location: { type: "string", example: "Kantin FK" },
+        description: { type: "string" },
       },
     },
     UserInput: {
-      type: 'object',
-      required: ['name', 'email', 'password', 'role'],
+      type: "object",
+      required: ["name", "email", "password", "role"],
       properties: {
-        name: { type: 'string', example: 'John Doe' },
-        email: { type: 'string', example: 'john@example.com' },
-        password: { type: 'string', example: 'SecurePassword123!' },
-        role: { type: 'string', enum: ['admin', 'owner', 'customer'], example: 'customer' },
+        name: { type: "string", example: "John Doe" },
+        email: { type: "string", example: "john@example.com" },
+        password: { type: "string", example: "SecurePassword123!" },
+        role: {
+          type: "string",
+          enum: ["admin", "owner", "customer"],
+          example: "customer",
+        },
       },
     },
     MenuItemInput: {
-      type: 'object',
-      required: ['stallId', 'name', 'price', 'isAvailable'],
+      type: "object",
+      required: ["stallId", "name", "price", "isAvailable"],
       properties: {
-        stallId: { type: 'integer', example: 1 },
-        name: { type: 'string', example: 'Nasi Goreng' },
-        price: { type: 'integer', example: 25000 },
-        isAvailable: { type: 'boolean', example: true },
+        stallId: { type: "integer", example: 1 },
+        name: { type: "string", example: "Nasi Goreng" },
+        price: { type: "integer", example: 25000 },
+        isAvailable: { type: "boolean", example: true },
       },
     },
     MenuItemUpdate: {
-      type: 'object',
+      type: "object",
       properties: {
-        name: { type: 'string', example: 'Nasi Goreng Update' },
-        price: { type: 'integer', example: 27000 },
-        isAvailable: { type: 'boolean', example: false },
+        name: { type: "string", example: "Nasi Goreng Update" },
+        price: { type: "integer", example: 27000 },
+        isAvailable: { type: "boolean", example: false },
       },
     },
     ReviewInput: {
-      type: 'object',
-      required: ['stallId', 'userId', 'rating'],
+      type: "object",
+      required: ["stallId", "userId", "rating"],
       properties: {
-        stallId: { type: 'integer', example: 1 },
-        userId: { type: 'integer', example: 3 },
-        rating: { type: 'integer', example: 5, description: 'Rating harus antara 1-5' },
-        comment: { type: 'string', example: 'Makanan lezat dan pelayanannya ramah!' },
+        stallId: { type: "integer", example: 1 },
+        userId: { type: "integer", example: 3 },
+        rating: {
+          type: "integer",
+          example: 5,
+          description: "Rating harus antara 1-5",
+        },
+        comment: {
+          type: "string",
+          example: "Makanan lezat dan pelayanannya ramah!",
+        },
+      },
+    },
+    ReviewInputForStall: {
+      type: "object",
+      required: ["rating"],
+      properties: {
+        rating: {
+          type: "integer",
+          example: 5,
+          description: "Rating harus antara 1-5",
+        },
+        comment: {
+          type: "string",
+          example: "Makanan lezat dan pelayanannya ramah!",
+        },
       },
     },
     LikeInput: {
-      type: 'object',
-      required: ['reviewId', 'userId'],
+      type: "object",
+      required: ["reviewId", "userId"],
       properties: {
-        reviewId: { type: 'integer', example: 1 },
-        userId: { type: 'integer', example: 3 },
+        reviewId: { type: "integer", example: 1 },
+        userId: { type: "integer", example: 3 },
       },
     },
     FlagInput: {
-      type: 'object',
-      required: ['status'],
+      type: "object",
+      required: ["status"],
       properties: {
-        status: { type: 'string', enum: ['pending', 'reviewed', 'resolved', 'dismissed'], example: 'reviewed' },
+        status: {
+          type: "string",
+          enum: ["pending", "reviewed", "resolved", "dismissed"],
+          example: "reviewed",
+        },
       },
     },
     AuditInput: {
-      type: 'object',
-      required: ['userId', 'action', 'targetTable', 'targetId'],
+      type: "object",
+      required: ["userId", "action", "targetTable", "targetId"],
       properties: {
-        userId: { type: 'integer', example: 1 },
-        action: { type: 'string', enum: ['CREATE', 'UPDATE', 'DELETE'], example: 'CREATE' },
-        targetTable: { type: 'string', example: 'USERS' },
-        targetId: { type: 'integer', example: 5 },
-        metadata: { type: 'string', example: '{"path":"/api/v1/users","method":"POST"}' },
+        userId: { type: "integer", example: 1 },
+        action: {
+          type: "string",
+          enum: ["CREATE", "UPDATE", "DELETE"],
+          example: "CREATE",
+        },
+        targetTable: { type: "string", example: "USERS" },
+        targetId: { type: "integer", example: 5 },
+        metadata: {
+          type: "string",
+          example: '{"path":"/api/v1/users","method":"POST"}',
+        },
       },
     },
   },
 };
 
-const outputFile = './swagger-output.json';
-const endpointsFiles = ['./src/index.ts'];
+const outputFile = "./swagger-output.json";
+const endpointsFiles = ["./src/index.ts"];
 
 swaggerAutogen()(outputFile, endpointsFiles, doc);
